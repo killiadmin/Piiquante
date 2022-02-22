@@ -1,33 +1,17 @@
-const mongoose = require("mongoose");
+//On utilise FileSystem (fs) pour manipuler le système de fichiers
 const { unlink } = require("fs").promises;
+const{ likeSauce } = require("./like")
+const Sauce = require("../models/Sauce")
 
-const sauceSchema = new mongoose.Schema({
-    userId: { type: String, required: true },
-    name: { type: String, required: true },
-    manufacturer: { type: String, required: true },
-    description: { type: String, required: true },
-    mainPepper: { type: String, required: true },
-    imageUrl: { type: String, required: true },
-    heat: { type: Number, required: true },
-    //likes et dislikes
-    likes:  Number,
-    dislikes: Number,
-    usersLiked: [String],
-    usersDisliked: [String]
-});
-
-const Sauce = mongoose.model("Sauce", sauceSchema);
-
-//Requete GET pour aller chercher les sauces crée
+//Requete GET pour aller chercher les sauces crées
 function getSauces(req, res) {
-    // Sauce.deleteMany({}).then(console.log).catch(console.error())
     Sauce
     .find({})
     .then(sauces => res.send(sauces))
     .catch((err) => res.status(500).send(err));
 };
 
-//Affiche les toutes les sauces dans "All Sauces"
+//Requete GET pour aller chercher la sauce que l'on souhaite consulter à l'aide de son id 
 function getSauceId(req, res) {
     const id = req.params.id;
 
@@ -37,49 +21,93 @@ function getSauceId(req, res) {
     .catch((err) => res.status(500).send(err));
 };
 
-// Supprime la sauce du tableau
+// Requete DELETE pour supprimer un produit 
 function deleteSauce(req, res) {
     const id = req.params.id;
     
     Sauce.findByIdAndDelete(id)
-    .then(sauce => deleteFileImage(sauce))
-    .then(sauce => res.send({ message: sauce }))
+    .then(sauce => {
+        if (sauce != null) {
+            res.status(200).send ({ message: "Le produit a bien été supprimé!"});
+            return sauce
+        } else {
+            res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
+        }
+    })
+    .then(product => deleteImage(product))
     .catch((err) => res.status(500).send({ message : err }));
 };
 
-// Supprime l'image du fichiers "images"
-function deleteFileImage(sauce) {
-    const fileSplit = sauce.imageUrl.split('/')[4];
-    unlink(`images/${fileSplit}`);
-    return sauce;
-}
-
-//Modifie une sauce existante
+/**
+ * Requete PUT qui va gérer la modification du body ou alors la modification de l'image. 
+ * Erreur gérer : Si le produit est supprimer de la base de données, une erreur est renvoyer. 
+ */
 function modifySauce(req, res) {
-    const {
-        params: { id }
+    const {params: { id }
     } = req;
-    
-    const { body } = req
-    // Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id})
-    
-    Sauce.findByIdAndUpdate(id, body)
-    .then((response) => {
-        if (response != null) {
-            console.log("La modification c'est bien passé!", response)
-            res.status(200).send ({ message: "Ton objet a bien été modifié!"})
-        } else {
-            console.log("La modificiation a échoué!", response)
-            res.status(404).send({ message: "Ton objet est introuvable!"})
-        }})
-    .catch(error => console.error("Il y a eu un probleme, catch", error)) 
-}
 
-//Ajouter une sauce, formulaire
+    const hasModifyImage = req.file != null;
+    const bodyRequest = putBodyRequest(hasModifyImage, req);
+    
+    Sauce.findByIdAndUpdate(id, bodyRequest)
+    .then((product) => {
+        if (product != null) {
+            res.status(200).send ({ message: "Le produit a bien été modifié!"});
+            return product
+        } else {
+            return res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
+        }})
+    .then((product) => deleteImage(product, hasModifyImage))
+    .catch(error => console.error("Il y a eu un probleme, catch", error)); 
+};
+
+/**
+ * Fonction qui nous permet de supprimer l'image du dossier images avec la méthode unlink,
+ * unlink est utilisée pour supprimer un fichier du système de fichiers.
+ */
+
+function deleteImage(product, hasModifyImage) {
+    if (hasModifyImage === false) {
+        return;
+    }else{
+        const imageToDelete = product.imageUrl.split("/").at(-1);
+        return unlink("images/" + imageToDelete);
+    };
+};
+
+/**
+ * On utilise dans cette fonction la propriété req.protocol qui contient la chaîne de protocole de requête qui est HTTP 
+ * cette propriété utilise la valeur du champ d'en-tête X-Forwarded-Proto si elle est présente.
+ */
+
+function protocolImageUrl(req) {
+    return req.protocol + "://" + req.get("host") + "/images/" + req.file.filename;
+};
+
+/**
+ * Cette fonction va gérer la modification des images, si la requete PUT modifie seulement le body, il retourne seulementle body sans l'image
+ * sinon le body + l'image url est renvoyé 
+ */
+
+function putBodyRequest(hasModifyImage, req) {
+    if (hasModifyImage == false) {
+        return req.body;
+    } else {
+        const requestBody = JSON.parse(req.body.sauce);
+        requestBody.imageUrl = protocolImageUrl(req);
+        return requestBody;
+    };  
+};
+
+/**
+ * fonction qui nous permet de crée un produit en injectant toutes les informations necesaire, 
+ * qui est ensuite sauvegarder et envoyé dans la base de données
+ */
+
 function createSauce(req, res) {
     const objSauce = JSON.parse(req.body.sauce);
     const { name, manufacturer, description, mainPepper, heat, userId } = objSauce;
-    const imageUrl = req.protocol + "://" + req.get("host") + "/images/" + req.file.filename
+    const imageUrl = protocolImageUrl(req)
 
     const sauce = new Sauce({
         userId, name, manufacturer, description, mainPepper, imageUrl, heat,
@@ -95,4 +123,4 @@ function createSauce(req, res) {
     .catch((err)=> res.status(500).send(err));
 };
 
-module.exports = { getSauces, createSauce, getSauceId, deleteSauce, modifySauce };
+module.exports = { getSauces, createSauce, getSauceId, deleteSauce, modifySauce, likeSauce };
