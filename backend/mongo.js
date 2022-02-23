@@ -1,4 +1,4 @@
-//Plugin gestion d'erreur en cas de mail similaires
+//Plugin gestion d'erreur en cas de mail similaires et password faible 
 const uniqueEmail = require("mongoose-unique-validator");
 
 //dotenv
@@ -15,14 +15,15 @@ mongoose
 .then((()=> console.log("Connection Mongoose Ok")))
 .catch(err => console.error("Error connecting", err));
 
-//On crée le schema de l'utilisateur
-const userschema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     email: { type : String, required: true, unique: true },
     password: { type : String, required: true }
 });
 
-userschema.plugin(uniqueEmail);
+//On crée le schema de l'utilisateur
 
-const User = mongoose.model("User", userschema);
+userSchema.plugin(uniqueEmail);
+
+const User = mongoose.model("User", userSchema);
 
 module.exports = {mongoose, User};

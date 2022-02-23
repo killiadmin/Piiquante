@@ -8,18 +8,16 @@ const port = 3000;
 require("./mongo");
 
 /**
- * On utilise Path pour accéder et interagir avec le systeme de fichiers, dirname va nous retourner la partie repertoire d'un chemion,
+ * On utilise Path pour accéder et interagir avec le systeme de fichiers, dirname va nous retourner la partie repertoire d'un chemin,
  * donc "images".
  */
 
-//Path
 const path = require("path");
 
 /**
  * On utilise Limiter, pour limiter le débit à toutes nos requetes, cela évite tout répétement abusif aux demandes de l'API
  */
 
-//Limiter
 const limiter = rateLimit ({
     windowMs: 15 * 60 * 1000, // 15 min
     max: 100, // limite chaque IP à 100 requêtes par 'window' de 15 minutes

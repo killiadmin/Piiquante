@@ -6,8 +6,9 @@ const express = require('express');
 const authRouter = express.Router();
 
 const {newUserRegister, connectUser} = require("../controllers/users");
+const passwordRegister = require("../middleware/password");
 
-authRouter.post("/signup", (req, res) => newUserRegister(req, res));
-authRouter.post("/login", (req, res) => connectUser(req, res));
+authRouter.post("/signup", passwordRegister, newUserRegister);
+authRouter.post("/login",connectUser);
 
 module.exports = { authRouter };
