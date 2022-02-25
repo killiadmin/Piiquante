@@ -43,6 +43,8 @@ function likeVote(product, like, userId, res) {
 function injectVote(product, userId, like) {
     const { usersLiked, usersDisliked} = product;
     const arrayVote = like === 1 ? usersLiked : usersDisliked;
+    if ([usersLiked, usersDisliked].every((array) => array.includes(userId)))
+    return res.status(500).send({ message: "L'utilisateur à déjà voté!"});
 
     if (arrayVote.includes(userId)) return product;
     arrayVote.push(userId);

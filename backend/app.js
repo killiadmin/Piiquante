@@ -1,11 +1,7 @@
 /**
- * On va utiliser dotenv, qui nous permet de charger les variables d'environnement d'un fichier env. Le stockage de la config,
- * est séparé du code.
  * On utilise CORS pour ajouter des en-têtes HTTP afin de permettre à l'utilisateur d'accéder aux ressources du serveur.
  * Et on utilise Helmet afin de nous aider à sécuriser express en définissant divers conditions aux en-têtes http. 
  */
-
-require('dotenv').config();
 
 //express
 const express = require("express");
@@ -16,7 +12,8 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
+//Helmet
 const helmet = require("helmet")
-app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
 module.exports = { app, express };

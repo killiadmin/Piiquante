@@ -1,4 +1,4 @@
-const { app, express } = require("./index");
+const { app, express } = require("./app");
 const { productsRouter } = require("./routers/sauces.router");
 const { authRouter } = require("./routers/auth.router");
 const rateLimit  = require('express-rate-limit');

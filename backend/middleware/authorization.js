@@ -21,6 +21,7 @@ function AuthUser(req, res, next) {
                 return res.status(403).send({ message: "Token is invalid !" + err });
 
             } else {
+                // console.log(tokenJwt)
                 next();
             }}
             )}

@@ -1,4 +1,4 @@
-const { User } = require("../mongo");
+const { User } = require("../models/users");
 const bcrypt = require("bcrypt");
 const tokenJwt = require("jsonwebtoken");
 

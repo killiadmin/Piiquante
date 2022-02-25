@@ -1,7 +1,10 @@
-//Plugin gestion d'erreur en cas de mail similaires et password faible 
-const uniqueEmail = require("mongoose-unique-validator");
+/**
+ * On va utiliser dotenv, qui nous permet de charger les variables d'environnement d'un fichier env. Le stockage de la config,
+ * est séparé du code.
+*/
 
 //dotenv
+require('dotenv').config();
 const login = process.env.LOGIN;
 const password = process.env.PASSWORD;
 const dataBase = process.env.DATA_BASE;
@@ -15,15 +18,4 @@ mongoose
 .then((()=> console.log("Connection Mongoose Ok")))
 .catch(err => console.error("Error connecting", err));
 
-const userSchema = new mongoose.Schema({
-    email: { type : String, required: true, unique: true },
-    password: { type : String, required: true }
-});
-
-//On crée le schema de l'utilisateur
-
-userSchema.plugin(uniqueEmail);
-
-const User = mongoose.model("User", userSchema);
-
-module.exports = {mongoose, User};
+module.exports = { mongoose };
