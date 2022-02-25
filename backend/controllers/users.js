@@ -13,9 +13,9 @@ async function newUserRegister(req, res) {
         const crypPassword = await hashPassword(password);      
         const user = new User({ email : email, password : crypPassword });       
         await user.save();        
-        res.status(201).send({ message: "User register !" });
+        res.status(201).send({ message: "L'utilisateur est bien enregistrer !" });
     } catch(err){
-        res.status(409).send({ message: "There is an error, this is " + err });
+        res.status(409).send({ message: "Il y a eu une erreur lors de la validation de l'utilisateur! "});
     };
 };
 
@@ -38,13 +38,12 @@ async function connectUser(req, res) {
         const cryptPassword = await bcrypt.compare(password, user.password);
         const token = createNewToken(email);
         if (!cryptPassword) {
-            res.status(403).send({ message: "Password invalid!" });
+            res.status(403).send({ message: "Le mot de passe est invalide!" });
         } else {
             res.status(200).send({ userId: user?._id, token: token });
         };
     } catch(err){
-        console.error(err);
-        res.status(500).send({ message:"There is a error!" });
+        res.status(500).send({ message:"Il y a eu une erreur lors de la connection de l'utilisateur!" });
     };
 };
 

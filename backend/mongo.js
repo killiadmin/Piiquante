@@ -15,7 +15,7 @@ const uri = `mongodb+srv://${login}:${password}@cluster0.0k4ku.mongodb.net/${dat
 
 mongoose
 .connect(uri)
-.then((()=> console.log("Connection Mongoose Ok")))
-.catch(err => console.error("Error connecting", err));
+.then((()=> console.log("Connection Mongoose OK!")))
+.catch(() => console.error("Connection Mongoose KO!"));
 
 module.exports = { mongoose };

@@ -8,7 +8,7 @@ function getSauces(req, res) {
     Sauce
     .find({})
     .then(sauces => res.send(sauces))
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ message: "Il y a un problème d'affichage des produits!"}));
 };
 
 //Requete GET pour aller chercher la sauce que l'on souhaite consulter à l'aide de son id 
@@ -18,7 +18,7 @@ function getSauceId(req, res) {
     Sauce
     .findById(id)
     .then(sauce => res.send(sauce))
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ message: "Il y a un problème d'affichage du produits!"}));
 };
 
 // Requete DELETE pour supprimer un produit 
@@ -28,14 +28,14 @@ function deleteSauce(req, res) {
     Sauce.findByIdAndDelete(id)
     .then(sauce => {
         if (sauce != null) {
-            res.status(200).send ({ message: "Le produit a bien été supprimé!"});
+            res.status(200).send({ message: "Le produit a bien été supprimé!"});
             return sauce
         } else {
             res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
         }
     })
     .then(product => deleteImage(product))
-    .catch((err) => res.status(500).send({ message : err }));
+    .catch(() => res.status(500).send({ message : "Le produit n'a pas pu être supprimer!"}));
 };
 
 /**
@@ -58,7 +58,7 @@ function modifySauce(req, res) {
             return res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
         }})
     .then((product) => deleteImage(product, hasModifyImage))
-    .catch(error => console.error("Il y a eu un probleme, catch", error)); 
+    .catch(() => res.status(500).send({ message: "Il y a eu un probleme pour modifier le produit!" }))
 };
 
 /**
@@ -119,8 +119,8 @@ function createSauce(req, res) {
 
     sauce
     .save()
-    .then((message)=> res.status(201).send({ message }))
-    .catch((err)=> res.status(500).send(err));
+    .then(()=> res.status(201).send({ message : "Le produit a bien été crée!" }))
+    .catch(()=> res.status(500).send({ message: "Il y a eu un probleme pour crée le produit!" }));
 };
 
 module.exports = { getSauces, createSauce, getSauceId, deleteSauce, modifySauce, likeSauce };

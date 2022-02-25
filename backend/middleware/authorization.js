@@ -10,18 +10,16 @@ function AuthUser(req, res, next) {
     const tokenJwt = headersToken.split(" ")[1];
     
     if (headersToken == null) {
-        return res.status(403).send({ message: "Headers invalid !" + err });
+        return res.status(403).send({ message: "Le token n'est pas valide" });
 
     } else if (tokenJwt == null) {
-        return res.status(403).send({ message: "Token has a null value!" + err });
+        return res.status(403).send({ message: "Le token n'est pas valide"});
 
     }else {
         jsonWebToken.verify(tokenJwt, process.env.PASSWORD_TOKEN, (err) => {
             if (err) {
-                return res.status(403).send({ message: "Token is invalid !" + err });
-
+                return res.status(403).send({ message: "L'authentification du token pose un probleme"});
             } else {
-                // console.log(tokenJwt)
                 next();
             }}
             )}

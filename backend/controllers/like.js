@@ -21,7 +21,7 @@ function likeSauce(req, res) {
             } else {
                 return res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
             }})
-        .catch((err)=> res.status(500).send(err))
+        .catch(()=> res.status(500).send({ message: "Il y a eu un problème lors de la validation du like!"}))
 }
 
 /**
@@ -63,7 +63,7 @@ function decreaseVote(product, userId, res) {
     const { usersLiked, usersDisliked} = product;
 
     if ([usersLiked, usersDisliked].every((array) => array.includes(userId)))
-    return res.status(500).send({ message: "L'utilisateur à voté deux fois!"});
+    return res.status(500).send({ message: "L'utilisateur à déjà voté!"});
 
     if (![usersLiked, usersDisliked].some(array => array.includes(userId)))
     return res.status(500).send({ message: "L'utilisateur n'a pas voté!"});
