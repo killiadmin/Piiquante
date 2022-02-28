@@ -3,7 +3,10 @@ const { unlink } = require("fs").promises;
 const{ likeSauce } = require("./like")
 const Sauce = require("../models/Sauce")
 
-//Requete GET pour aller chercher les sauces crées
+/**
+ * Requete GET pour aller chercher tous les produits crées
+ */
+
 function getSauces(req, res) {
     Sauce
     .find({})
@@ -13,7 +16,10 @@ function getSauces(req, res) {
         res.status(500).send({ message: "Il y a un problème d'affichage des produits!"});
 })};
 
-//Requete GET pour aller chercher la sauce que l'on souhaite consulter à l'aide de son id 
+/**
+ * Requete GET pour aller chercher le produit que l'on souhaite consulter à l'aide de son id unique
+ */
+
 function getSauceId(req, res) {
     const id = req.params.id;
 
@@ -25,7 +31,10 @@ function getSauceId(req, res) {
         res.status(500).send({ message: "Il y a un problème d'affichage du produits!"});
 })};
 
-// Requete DELETE pour supprimer un produit 
+/**
+ * Requete DELETE pour supprimer un produit + son image du dossier image avec la fonction "deleteImage"
+*/
+
 function deleteSauce(req, res) {
     const id = req.params.id;
     
@@ -48,6 +57,7 @@ function deleteSauce(req, res) {
  * Requete PUT qui va gérer la modification du body ou alors la modification de l'image. 
  * Erreur gérer : Si le produit est supprimer de la base de données, une erreur est renvoyer. 
  */
+
 function modifySauce(req, res) {
     const {params: { id }
     } = req;
@@ -93,8 +103,9 @@ function protocolImageUrl(req) {
 };
 
 /**
- * Cette fonction va gérer la modification des images, si la requete PUT modifie seulement le body, il retourne seulementle body sans l'image
- * sinon le body + l'image url est renvoyé 
+ * Cette fonction va gérer la modification des images,
+ * si la requete PUT modifie seulement le body, il retourne seulement le body sans l'image
+ * sinon il retourne le body + l'image url est renvoyé e
  */
 
 function putBodyRequest(hasModifyImage, req) {

@@ -20,7 +20,10 @@ async function newUserRegister(req, res) {
     };
 };
 
-//Cryptage des password avec bcrypt
+/**
+ * Cryptage des passwords avec bcrypt
+ */
+
 function hashPassword(password) {
     const saltRounds = 10;
     return bcrypt.hash(password, saltRounds);
@@ -49,7 +52,10 @@ async function connectUser(req, res) {
     };
 };
 
-//Creation de token du nouvel utilisateur
+/**
+ * Creation de token assigné a la connection de l'utilisateur
+ */
+
 function createNewToken(email) {
     const passwordToken = process.env.PASSWORD_TOKEN;
     const newToken = tokenJwt.sign({ email : email }, `${passwordToken}`, { expiresIn: "48h" });

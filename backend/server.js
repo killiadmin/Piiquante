@@ -4,7 +4,6 @@ const { authRouter } = require("./routers/auth.router");
 const rateLimit  = require('express-rate-limit');
 const port = 3000;
 
-//On se connecte à la dataBases
 require("./mongo");
 
 /**
