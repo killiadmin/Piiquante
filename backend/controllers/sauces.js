@@ -8,8 +8,10 @@ function getSauces(req, res) {
     Sauce
     .find({})
     .then(sauces => res.send(sauces))
-    .catch(() => res.status(500).send({ message: "Il y a un problème d'affichage des produits!"}));
-};
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Il y a un problème d'affichage des produits!"});
+})};
 
 //Requete GET pour aller chercher la sauce que l'on souhaite consulter à l'aide de son id 
 function getSauceId(req, res) {
@@ -18,8 +20,10 @@ function getSauceId(req, res) {
     Sauce
     .findById(id)
     .then(sauce => res.send(sauce))
-    .catch(() => res.status(500).send({ message: "Il y a un problème d'affichage du produits!"}));
-};
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Il y a un problème d'affichage du produits!"});
+})};
 
 // Requete DELETE pour supprimer un produit 
 function deleteSauce(req, res) {
@@ -35,8 +39,10 @@ function deleteSauce(req, res) {
         }
     })
     .then(product => deleteImage(product))
-    .catch(() => res.status(500).send({ message : "Le produit n'a pas pu être supprimer!"}));
-};
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message : "Le produit n'a pas pu être supprimer!"});
+})};
 
 /**
  * Requete PUT qui va gérer la modification du body ou alors la modification de l'image. 
@@ -58,8 +64,10 @@ function modifySauce(req, res) {
             return res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
         }})
     .then((product) => deleteImage(product, hasModifyImage))
-    .catch(() => res.status(500).send({ message: "Il y a eu un probleme pour modifier le produit!" }))
-};
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Il y a eu un probleme pour modifier le produit!" });
+})};
 
 /**
  * Fonction qui nous permet de supprimer l'image du dossier images avec la méthode unlink,
@@ -119,8 +127,10 @@ function createSauce(req, res) {
 
     sauce
     .save()
-    .then(()=> res.status(201).send({ message : "Le produit a bien été crée!" }))
-    .catch(()=> res.status(500).send({ message: "Il y a eu un probleme pour crée le produit!" }));
-};
+    .then(() => res.status(201).send({ message : "Le produit a bien été crée!" }))
+    .catch((err) => {
+        console.error(err);
+        res.status(500).send({ message: "Il y a eu un probleme pour crée le produit!" });
+})};
 
 module.exports = { getSauces, createSauce, getSauceId, deleteSauce, modifySauce, likeSauce };

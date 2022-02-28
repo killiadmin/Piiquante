@@ -15,6 +15,7 @@ async function newUserRegister(req, res) {
         await user.save();        
         res.status(201).send({ message: "L'utilisateur est bien enregistrer !" });
     } catch(err){
+        console.log(err);
         res.status(409).send({ message: "Il y a eu une erreur lors de la validation de l'utilisateur! "});
     };
 };
@@ -43,6 +44,7 @@ async function connectUser(req, res) {
             res.status(200).send({ userId: user?._id, token: token });
         };
     } catch(err){
+        console.error(err);
         res.status(500).send({ message:"Il y a eu une erreur lors de la connection de l'utilisateur!" });
     };
 };

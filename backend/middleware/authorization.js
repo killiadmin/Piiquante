@@ -18,11 +18,10 @@ function AuthUser(req, res, next) {
     }else {
         jsonWebToken.verify(tokenJwt, process.env.PASSWORD_TOKEN, (err) => {
             if (err) {
+                console.error(err);
                 return res.status(403).send({ message: "L'authentification du token pose un probleme"});
             } else {
                 next();
-            }}
-            )}
-        };
+            }})}};
 
 module.exports = { AuthUser };

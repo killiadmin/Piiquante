@@ -21,8 +21,10 @@ function likeSauce(req, res) {
             } else {
                 return res.status(404).send({ message: "Le produit est introuvable dans la base de données!"});
             }})
-        .catch(()=> res.status(500).send({ message: "Il y a eu un problème lors de la validation du like!"}))
-}
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send({ message: "Il y a eu un problème lors de la validation du like!"});
+})};
 
 /**
  * Si la valeur du like est 1 ou -1, la fonction "InjectVote" est invoqué sinon 
@@ -30,9 +32,9 @@ function likeSauce(req, res) {
  */
 
 function likeVote(product, like, userId, res) {
-    if (like === 1 || like === -1) return injectVote(product, userId, like)
-    return decreaseVote(product, userId, res)
-}
+    if (like === 1 || like === -1) return injectVote(product, userId, like);
+    return decreaseVote(product, userId, res);
+};
 
 /**
  * Pour la gestion de nos like, on utilise un opérateur conditionnel qui va comporter 3 opérandes.
