@@ -65,10 +65,10 @@ function decreaseVote(product, userId, res) {
     const { usersLiked, usersDisliked} = product;
 
     if ([usersLiked, usersDisliked].every((array) => array.includes(userId)))
-    return res.status(500).send({ message: "L'utilisateur à déjà voté!"});
+    return res.status(400).send({ message: "L'utilisateur à déjà voté!"});
 
     if (![usersLiked, usersDisliked].some(array => array.includes(userId)))
-    return res.status(500).send({ message: "L'utilisateur n'a pas voté!"});
+    return res.status(400).send({ message: "L'utilisateur n'a pas voté!"});
 
     if (usersLiked.includes(userId)){
         --product.likes;

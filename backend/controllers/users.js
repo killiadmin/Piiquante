@@ -15,7 +15,7 @@ async function newUserRegister(req, res) {
         await user.save();        
         res.status(201).send({ message: "L'utilisateur est bien enregistrer !" });
     } catch(err){
-        console.log(err);
+        console.error(err);
         res.status(409).send({ message: "Il y a eu une erreur lors de la validation de l'utilisateur! "});
     };
 };
